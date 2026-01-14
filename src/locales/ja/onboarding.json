@@ -1,0 +1,79 @@
+{
+  "welcome": {
+    "title": "いっしょに管理",
+    "subtitle": "二人での生活をシンプルに。支出を記録して、未来のために貯金しよう。",
+    "createAccount": "アカウントを作成",
+    "logIn": "ログイン",
+    "continueWith": "または次の方法で続ける",
+    "google": "Google",
+    "apple": "Apple",
+    "terms": "続けることで、",
+    "termsLink": "利用規約",
+    "and": "と",
+    "privacyLink": "プライバシーポリシー",
+    "agree": "に同意したものとみなされます。"
+  },
+  "groupSetup": {
+    "step": "ステップ {{current}} / {{total}}",
+    "title": "どのように始めますか？",
+    "subtitle": "新しいグループを作成するか、既存のグループに参加します。",
+    "createNew": {
+      "title": "新規グループを作成",
+      "subtitle": "新しく始めて、後で招待",
+      "groupName": "グループ名",
+      "groupNamePlaceholder": "例: 我が家",
+      "currency": "通貨",
+      "jpy": "¥ 円",
+      "usd": "$ ドル",
+      "eur": "€ ユーロ",
+      "gbp": "£ ポンド",
+      "continue": "続ける"
+    },
+    "joinExisting": {
+      "title": "既存グループに参加",
+      "subtitle": "招待コードはありますか？",
+      "scanQR": "QRをスキャン",
+      "enterCode": "コード入力"
+    },
+    "or": "または"
+  },
+  "profileSetup": {
+    "title": "プロフィール設定",
+    "subtitle": "グループ内での表示名を設定してください",
+    "displayName": "表示名",
+    "displayNamePlaceholder": "ニックネームを入力",
+    "avatar": "アバター",
+    "selectColor": "色を選択",
+    "continue": "続ける",
+    "skip": "スキップ"
+  },
+  "categoryTemplate": {
+    "title": "カテゴリテンプレート",
+    "subtitle": "よく使うカテゴリのテンプレートを選択してください",
+    "templates": {
+      "standard": {
+        "name": "標準",
+        "description": "一般的な家計管理に最適"
+      },
+      "simple": {
+        "name": "シンプル",
+        "description": "必要最小限のカテゴリ"
+      },
+      "detailed": {
+        "name": "詳細",
+        "description": "細かく管理したい方向け"
+      }
+    },
+    "customize": "後でカスタマイズできます",
+    "finish": "完了"
+  },
+  "joinGroup": {
+    "title": "グループに参加",
+    "subtitle": "招待コードを入力してグループに参加します",
+    "inviteCode": "招待コード",
+    "inviteCodePlaceholder": "コードを入力",
+    "join": "参加する",
+    "scanQR": "QRコードをスキャン",
+    "invalidCode": "無効な招待コードです"
+  }
+}

@@ -1,0 +1,79 @@
+{
+  "welcome": {
+    "title": "Manage together",
+    "subtitle": "Simple budgeting for shared lives. Track expenses and save for your future, simply.",
+    "createAccount": "Create Account",
+    "logIn": "Log In",
+    "continueWith": "or continue with",
+    "google": "Google",
+    "apple": "Apple",
+    "terms": "By continuing you agree to our",
+    "termsLink": "Terms of Service",
+    "and": "and",
+    "privacyLink": "Privacy Policy",
+    "agree": "."
+  },
+  "groupSetup": {
+    "step": "Step {{current}} / {{total}}",
+    "title": "How do you want to start?",
+    "subtitle": "Create a fresh budget for your household or join an existing partner.",
+    "createNew": {
+      "title": "Create New Group",
+      "subtitle": "Start fresh & invite later",
+      "groupName": "Group Name",
+      "groupNamePlaceholder": "e.g. Our Cozy Home",
+      "currency": "Currency",
+      "jpy": "¥ JPY",
+      "usd": "$ USD",
+      "eur": "€ EUR",
+      "gbp": "£ GBP",
+      "continue": "Continue"
+    },
+    "joinExisting": {
+      "title": "Join Existing Group",
+      "subtitle": "Have an invite code?",
+      "scanQR": "Scan QR",
+      "enterCode": "Enter Code"
+    },
+    "or": "OR"
+  },
+  "profileSetup": {
+    "title": "Profile Setup",
+    "subtitle": "Set your display name for the group",
+    "displayName": "Display Name",
+    "displayNamePlaceholder": "Enter your nickname",
+    "avatar": "Avatar",
+    "selectColor": "Select Color",
+    "continue": "Continue",
+    "skip": "Skip"
+  },
+  "categoryTemplate": {
+    "title": "Category Template",
+    "subtitle": "Choose a category template to get started",
+    "templates": {
+      "standard": {
+        "name": "Standard",
+        "description": "Perfect for general budgeting"
+      },
+      "simple": {
+        "name": "Simple",
+        "description": "Minimal essential categories"
+      },
+      "detailed": {
+        "name": "Detailed",
+        "description": "For comprehensive tracking"
+      }
+    },
+    "customize": "You can customize later",
+    "finish": "Finish"
+  },
+  "joinGroup": {
+    "title": "Join Group",
+    "subtitle": "Enter the invite code to join a group",
+    "inviteCode": "Invite Code",
+    "inviteCodePlaceholder": "Enter code",
+    "join": "Join",
+    "scanQR": "Scan QR Code",
+    "invalidCode": "Invalid invite code"
+  }
+}

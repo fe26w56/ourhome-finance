@@ -1,0 +1,52 @@
+{
+  "title": "レポート",
+  "subtitle": "収支の分析",
+  "summary": {
+    "title": "月次サマリー",
+    "income": "収入",
+    "expense": "支出",
+    "balance": "収支",
+    "vs": "vs",
+    "lastMonth": "先月比",
+    "increase": "{{amount}}増加",
+    "decrease": "{{amount}}減少",
+    "noChange": "変化なし"
+  },
+  "chart": {
+    "categoryBreakdown": "カテゴリ別内訳",
+    "dailyTrend": "日別推移",
+    "weeklyTrend": "週別推移",
+    "monthlyTrend": "月別推移",
+    "budgetComparison": "予算 vs 実績"
+  },
+  "period": {
+    "daily": "日別",
+    "weekly": "週別",
+    "monthly": "月別",
+    "thisMonth": "今月",
+    "lastMonth": "先月",
+    "last3Months": "過去3ヶ月",
+    "last6Months": "過去6ヶ月",
+    "thisYear": "今年",
+    "custom": "カスタム"
+  },
+  "category": {
+    "title": "カテゴリ別",
+    "percentage": "{{percentage}}%",
+    "amount": "{{amount}}円"
+  },
+  "comparison": {
+    "budget": "予算",
+    "actual": "実績",
+    "difference": "差額"
+  },
+  "empty": {
+    "title": "データがありません",
+    "description": "取引を追加するとレポートが表示されます"
+  },
+  "export": {
+    "title": "エクスポート",
+    "csv": "CSVでダウンロード",
+    "period": "期間を選択"
+  }
+}

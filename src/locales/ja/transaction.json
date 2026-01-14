@@ -1,0 +1,68 @@
+{
+  "title": "取引",
+  "addNew": "取引を追加",
+  "edit": "取引を編集",
+  "type": {
+    "expense": "支出",
+    "income": "収入",
+    "label": "種別"
+  },
+  "fields": {
+    "amount": "金額",
+    "date": "日付",
+    "category": "カテゴリ",
+    "memo": "メモ",
+    "memoPlaceholder": "メモを入力（任意）",
+    "paidBy": "支払った人",
+    "shared": "共有",
+    "personal": "個人"
+  },
+  "split": {
+    "title": "負担方法",
+    "equal": "均等",
+    "percentage": "割合",
+    "amount": "金額指定",
+    "yourShare": "あなたの負担",
+    "partnerShare": "パートナーの負担",
+    "total": "合計"
+  },
+  "messages": {
+    "saved": "取引を保存しました",
+    "deleted": "取引を削除しました",
+    "updated": "取引を更新しました",
+    "confirmDelete": "この取引を削除しますか？",
+    "deleteWarning": "この操作は取り消せません"
+  },
+  "empty": {
+    "title": "取引がありません",
+    "description": "最初の取引を追加してください",
+    "addFirst": "最初の取引を追加"
+  },
+  "list": {
+    "title": "取引一覧",
+    "recentTransactions": "最近の取引",
+    "allTransactions": "すべての取引",
+    "showMore": "もっと見る"
+  },
+  "filter": {
+    "all": "すべて",
+    "expense": "支出のみ",
+    "income": "収入のみ",
+    "shared": "共有のみ",
+    "personal": "個人のみ",
+    "period": "期間",
+    "category": "カテゴリ",
+    "member": "メンバー",
+    "amountRange": "金額範囲",
+    "minAmount": "最小金額",
+    "maxAmount": "最大金額"
+  },
+  "sort": {
+    "title": "並び替え",
+    "dateDesc": "日付（新しい順）",
+    "dateAsc": "日付（古い順）",
+    "amountDesc": "金額（高い順）",
+    "amountAsc": "金額（低い順）",
+    "category": "カテゴリ"
+  }
+}

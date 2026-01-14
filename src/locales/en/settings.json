@@ -1,0 +1,77 @@
+{
+  "title": "Settings",
+  "profile": {
+    "title": "Profile",
+    "displayName": "Display Name",
+    "email": "Email",
+    "avatar": "Avatar",
+    "changeAvatar": "Change Avatar"
+  },
+  "group": {
+    "title": "Group",
+    "name": "Group Name",
+    "members": "Members",
+    "invite": "Invite Member",
+    "inviteCode": "Invite Code",
+    "inviteLink": "Invite Link",
+    "regenerateCode": "Regenerate Code",
+    "copied": "Copied",
+    "qrCode": "QR Code",
+    "role": {
+      "owner": "Owner",
+      "admin": "Admin",
+      "member": "Member",
+      "viewer": "Viewer"
+    },
+    "changeRole": "Change Role",
+    "removeMember": "Remove Member",
+    "confirmRemove": "Remove {{name}} from the group?"
+  },
+  "categories": {
+    "title": "Category Management",
+    "manage": "Manage Categories",
+    "add": "Add Category",
+    "edit": "Edit Category",
+    "delete": "Delete Category",
+    "icon": "Icon",
+    "color": "Color",
+    "reorder": "Reorder"
+  },
+  "notification": {
+    "title": "Notifications",
+    "reminder": "Input Reminder",
+    "reminderTime": "Reminder Time",
+    "budgetAlert": "Budget Alert",
+    "partnerActivity": "Partner Activity Notifications"
+  },
+  "language": {
+    "title": "Language",
+    "current": "Current Language",
+    "select": "Select Language"
+  },
+  "data": {
+    "title": "Data",
+    "export": "Export Data",
+    "exportDescription": "Download transaction data as CSV"
+  },
+  "account": {
+    "title": "Account",
+    "signOut": "Sign Out",
+    "deleteAccount": "Delete Account",
+    "confirmSignOut": "Sign out?",
+    "confirmDelete": "Deleting your account will permanently remove all your data. Are you sure?"
+  },
+  "about": {
+    "title": "About",
+    "version": "Version",
+    "terms": "Terms of Service",
+    "privacy": "Privacy Policy",
+    "contact": "Contact Us"
+  },
+  "help": {
+    "title": "Help",
+    "guide": "User Guide",
+    "faq": "FAQ",
+    "contact": "Contact Us"
+  }
+}

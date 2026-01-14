@@ -1,0 +1,75 @@
+{
+  "app": {
+    "name": "OurHome Finance",
+    "tagline": "二人のためのかんたん家計簿"
+  },
+  "actions": {
+    "save": "保存",
+    "cancel": "キャンセル",
+    "delete": "削除",
+    "edit": "編集",
+    "add": "追加",
+    "close": "閉じる",
+    "confirm": "確認",
+    "search": "検索",
+    "filter": "フィルター",
+    "reset": "リセット",
+    "apply": "適用",
+    "export": "エクスポート",
+    "copy": "コピー",
+    "back": "戻る",
+    "next": "次へ",
+    "done": "完了",
+    "loading": "読み込み中...",
+    "retry": "再試行"
+  },
+  "date": {
+    "today": "今日",
+    "yesterday": "昨日",
+    "thisMonth": "今月",
+    "lastMonth": "先月",
+    "thisYear": "今年",
+    "selectDate": "日付を選択",
+    "monthFormat": "{{year}}年{{month}}月",
+    "dayFormat": "{{month}}月{{day}}日",
+    "weekdays": {
+      "sun": "日",
+      "mon": "月",
+      "tue": "火",
+      "wed": "水",
+      "thu": "木",
+      "fri": "金",
+      "sat": "土"
+    }
+  },
+  "currency": {
+    "format": "¥{{amount}}",
+    "yen": "円"
+  },
+  "validation": {
+    "required": "この項目は必須です",
+    "invalidAmount": "有効な金額を入力してください",
+    "mismatchTotal": "合計金額が一致しません",
+    "invalidEmail": "有効なメールアドレスを入力してください",
+    "minLength": "{{min}}文字以上で入力してください",
+    "maxLength": "{{max}}文字以内で入力してください"
+  },
+  "status": {
+    "online": "オンライン",
+    "offline": "オフライン",
+    "syncing": "同期中...",
+    "syncComplete": "同期完了",
+    "syncFailed": "同期に失敗しました"
+  },
+  "empty": {
+    "noData": "データがありません",
+    "noResults": "結果が見つかりません"
+  },
+  "accessibility": {
+    "skipToMain": "メインコンテンツにスキップ",
+    "skipToNav": "ナビゲーションにスキップ",
+    "closeModal": "モーダルを閉じる",
+    "openMenu": "メニューを開く",
+    "loading": "読み込み中"
+  }
+}

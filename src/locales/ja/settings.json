@@ -1,0 +1,77 @@
+{
+  "title": "設定",
+  "profile": {
+    "title": "プロフィール",
+    "displayName": "表示名",
+    "email": "メールアドレス",
+    "avatar": "アバター",
+    "changeAvatar": "アバターを変更"
+  },
+  "group": {
+    "title": "グループ",
+    "name": "グループ名",
+    "members": "メンバー",
+    "invite": "メンバーを招待",
+    "inviteCode": "招待コード",
+    "inviteLink": "招待リンク",
+    "regenerateCode": "コードを再生成",
+    "copied": "コピーしました",
+    "qrCode": "QRコード",
+    "role": {
+      "owner": "オーナー",
+      "admin": "管理者",
+      "member": "メンバー",
+      "viewer": "閲覧者"
+    },
+    "changeRole": "権限を変更",
+    "removeMember": "メンバーを削除",
+    "confirmRemove": "{{name}}をグループから削除しますか？"
+  },
+  "categories": {
+    "title": "カテゴリ管理",
+    "manage": "カテゴリを管理",
+    "add": "カテゴリを追加",
+    "edit": "カテゴリを編集",
+    "delete": "カテゴリを削除",
+    "icon": "アイコン",
+    "color": "色",
+    "reorder": "並び替え"
+  },
+  "notification": {
+    "title": "通知",
+    "reminder": "入力リマインダー",
+    "reminderTime": "リマインダー時刻",
+    "budgetAlert": "予算アラート",
+    "partnerActivity": "パートナーの活動通知"
+  },
+  "language": {
+    "title": "言語",
+    "current": "現在の言語",
+    "select": "言語を選択"
+  },
+  "data": {
+    "title": "データ",
+    "export": "データをエクスポート",
+    "exportDescription": "取引データをCSV形式でダウンロード"
+  },
+  "account": {
+    "title": "アカウント",
+    "signOut": "サインアウト",
+    "deleteAccount": "アカウントを削除",
+    "confirmSignOut": "サインアウトしますか？",
+    "confirmDelete": "アカウントを削除すると、すべてのデータが失われます。本当に削除しますか？"
+  },
+  "about": {
+    "title": "このアプリについて",
+    "version": "バージョン",
+    "terms": "利用規約",
+    "privacy": "プライバシーポリシー",
+    "contact": "お問い合わせ"
+  },
+  "help": {
+    "title": "ヘルプ",
+    "guide": "使い方ガイド",
+    "faq": "よくある質問",
+    "contact": "お問い合わせ"
+  }
+}

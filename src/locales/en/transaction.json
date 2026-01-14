@@ -1,0 +1,68 @@
+{
+  "title": "Transaction",
+  "addNew": "Add Transaction",
+  "edit": "Edit Transaction",
+  "type": {
+    "expense": "Expense",
+    "income": "Income",
+    "label": "Type"
+  },
+  "fields": {
+    "amount": "Amount",
+    "date": "Date",
+    "category": "Category",
+    "memo": "Memo",
+    "memoPlaceholder": "Enter memo (optional)",
+    "paidBy": "Paid by",
+    "shared": "Shared",
+    "personal": "Personal"
+  },
+  "split": {
+    "title": "Split Method",
+    "equal": "Equal",
+    "percentage": "Percentage",
+    "amount": "Fixed Amount",
+    "yourShare": "Your share",
+    "partnerShare": "Partner's share",
+    "total": "Total"
+  },
+  "messages": {
+    "saved": "Transaction saved",
+    "deleted": "Transaction deleted",
+    "updated": "Transaction updated",
+    "confirmDelete": "Delete this transaction?",
+    "deleteWarning": "This action cannot be undone"
+  },
+  "empty": {
+    "title": "No transactions",
+    "description": "Add your first transaction",
+    "addFirst": "Add first transaction"
+  },
+  "list": {
+    "title": "Transaction List",
+    "recentTransactions": "Recent Transactions",
+    "allTransactions": "All Transactions",
+    "showMore": "Show more"
+  },
+  "filter": {
+    "all": "All",
+    "expense": "Expenses only",
+    "income": "Income only",
+    "shared": "Shared only",
+    "personal": "Personal only",
+    "period": "Period",
+    "category": "Category",
+    "member": "Member",
+    "amountRange": "Amount Range",
+    "minAmount": "Min amount",
+    "maxAmount": "Max amount"
+  },
+  "sort": {
+    "title": "Sort",
+    "dateDesc": "Date (newest first)",
+    "dateAsc": "Date (oldest first)",
+    "amountDesc": "Amount (highest first)",
+    "amountAsc": "Amount (lowest first)",
+    "category": "Category"
+  }
+}

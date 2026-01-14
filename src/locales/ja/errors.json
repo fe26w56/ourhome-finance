@@ -1,0 +1,51 @@
+{
+  "general": {
+    "unknown": "エラーが発生しました",
+    "network": "ネットワークエラーが発生しました",
+    "timeout": "タイムアウトしました",
+    "notFound": "見つかりませんでした",
+    "unauthorized": "認証が必要です",
+    "forbidden": "アクセスが拒否されました",
+    "serverError": "サーバーエラーが発生しました",
+    "tryAgain": "もう一度お試しください"
+  },
+  "auth": {
+    "invalidCredentials": "メールアドレスまたはパスワードが正しくありません",
+    "emailInUse": "このメールアドレスは既に使用されています",
+    "weakPassword": "パスワードが弱すぎます",
+    "userNotFound": "ユーザーが見つかりません",
+    "sessionExpired": "セッションが期限切れです。再度ログインしてください",
+    "passwordMismatch": "パスワードが一致しません"
+  },
+  "transaction": {
+    "createFailed": "取引の作成に失敗しました",
+    "updateFailed": "取引の更新に失敗しました",
+    "deleteFailed": "取引の削除に失敗しました",
+    "invalidAmount": "金額が無効です",
+    "splitMismatch": "負担額の合計が一致しません"
+  },
+  "budget": {
+    "createFailed": "予算の作成に失敗しました",
+    "updateFailed": "予算の更新に失敗しました",
+    "deleteFailed": "予算の削除に失敗しました"
+  },
+  "group": {
+    "createFailed": "グループの作成に失敗しました",
+    "joinFailed": "グループへの参加に失敗しました",
+    "invalidCode": "招待コードが無効です",
+    "alreadyMember": "すでにこのグループのメンバーです"
+  },
+  "validation": {
+    "required": "この項目は必須です",
+    "email": "有効なメールアドレスを入力してください",
+    "minLength": "{{min}}文字以上で入力してください",
+    "maxLength": "{{max}}文字以内で入力してください",
+    "number": "数値を入力してください",
+    "positive": "正の数を入力してください"
+  },
+  "offline": {
+    "title": "オフラインです",
+    "message": "インターネット接続を確認してください",
+    "pendingSync": "{{count}}件のデータが同期待ちです"
+  }
+}

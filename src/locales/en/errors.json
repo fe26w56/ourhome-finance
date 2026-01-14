@@ -1,0 +1,51 @@
+{
+  "general": {
+    "unknown": "An error occurred",
+    "network": "A network error occurred",
+    "timeout": "Request timed out",
+    "notFound": "Not found",
+    "unauthorized": "Authentication required",
+    "forbidden": "Access denied",
+    "serverError": "Server error occurred",
+    "tryAgain": "Please try again"
+  },
+  "auth": {
+    "invalidCredentials": "Invalid email or password",
+    "emailInUse": "This email is already in use",
+    "weakPassword": "Password is too weak",
+    "userNotFound": "User not found",
+    "sessionExpired": "Session expired. Please log in again",
+    "passwordMismatch": "Passwords do not match"
+  },
+  "transaction": {
+    "createFailed": "Failed to create transaction",
+    "updateFailed": "Failed to update transaction",
+    "deleteFailed": "Failed to delete transaction",
+    "invalidAmount": "Invalid amount",
+    "splitMismatch": "Split amounts do not match total"
+  },
+  "budget": {
+    "createFailed": "Failed to create budget",
+    "updateFailed": "Failed to update budget",
+    "deleteFailed": "Failed to delete budget"
+  },
+  "group": {
+    "createFailed": "Failed to create group",
+    "joinFailed": "Failed to join group",
+    "invalidCode": "Invalid invite code",
+    "alreadyMember": "You are already a member of this group"
+  },
+  "validation": {
+    "required": "This field is required",
+    "email": "Please enter a valid email address",
+    "minLength": "Must be at least {{min}} characters",
+    "maxLength": "Must be {{max}} characters or less",
+    "number": "Please enter a number",
+    "positive": "Please enter a positive number"
+  },
+  "offline": {
+    "title": "You're offline",
+    "message": "Please check your internet connection",
+    "pendingSync": "{{count}} items pending sync"
+  }
+}

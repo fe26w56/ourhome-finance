@@ -1,0 +1,75 @@
+{
+  "app": {
+    "name": "OurHome Finance",
+    "tagline": "Simple finance tracking for two"
+  },
+  "actions": {
+    "save": "Save",
+    "cancel": "Cancel",
+    "delete": "Delete",
+    "edit": "Edit",
+    "add": "Add",
+    "close": "Close",
+    "confirm": "Confirm",
+    "search": "Search",
+    "filter": "Filter",
+    "reset": "Reset",
+    "apply": "Apply",
+    "export": "Export",
+    "copy": "Copy",
+    "back": "Back",
+    "next": "Next",
+    "done": "Done",
+    "loading": "Loading...",
+    "retry": "Retry"
+  },
+  "date": {
+    "today": "Today",
+    "yesterday": "Yesterday",
+    "thisMonth": "This Month",
+    "lastMonth": "Last Month",
+    "thisYear": "This Year",
+    "selectDate": "Select Date",
+    "monthFormat": "{{month}} {{year}}",
+    "dayFormat": "{{month}} {{day}}",
+    "weekdays": {
+      "sun": "Sun",
+      "mon": "Mon",
+      "tue": "Tue",
+      "wed": "Wed",
+      "thu": "Thu",
+      "fri": "Fri",
+      "sat": "Sat"
+    }
+  },
+  "currency": {
+    "format": "¥{{amount}}",
+    "yen": "yen"
+  },
+  "validation": {
+    "required": "This field is required",
+    "invalidAmount": "Please enter a valid amount",
+    "mismatchTotal": "Total amount does not match",
+    "invalidEmail": "Please enter a valid email address",
+    "minLength": "Must be at least {{min}} characters",
+    "maxLength": "Must be {{max}} characters or less"
+  },
+  "status": {
+    "online": "Online",
+    "offline": "Offline",
+    "syncing": "Syncing...",
+    "syncComplete": "Sync complete",
+    "syncFailed": "Sync failed"
+  },
+  "empty": {
+    "noData": "No data",
+    "noResults": "No results found"
+  },
+  "accessibility": {
+    "skipToMain": "Skip to main content",
+    "skipToNav": "Skip to navigation",
+    "closeModal": "Close modal",
+    "openMenu": "Open menu",
+    "loading": "Loading"
+  }
+}

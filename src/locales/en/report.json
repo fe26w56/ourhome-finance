@@ -1,0 +1,52 @@
+{
+  "title": "Reports",
+  "subtitle": "Analyze your finances",
+  "summary": {
+    "title": "Monthly Summary",
+    "income": "Income",
+    "expense": "Expense",
+    "balance": "Balance",
+    "vs": "vs",
+    "lastMonth": "vs last month",
+    "increase": "{{amount}} increase",
+    "decrease": "{{amount}} decrease",
+    "noChange": "No change"
+  },
+  "chart": {
+    "categoryBreakdown": "Category Breakdown",
+    "dailyTrend": "Daily Trend",
+    "weeklyTrend": "Weekly Trend",
+    "monthlyTrend": "Monthly Trend",
+    "budgetComparison": "Budget vs Actual"
+  },
+  "period": {
+    "daily": "Daily",
+    "weekly": "Weekly",
+    "monthly": "Monthly",
+    "thisMonth": "This Month",
+    "lastMonth": "Last Month",
+    "last3Months": "Last 3 Months",
+    "last6Months": "Last 6 Months",
+    "thisYear": "This Year",
+    "custom": "Custom"
+  },
+  "category": {
+    "title": "By Category",
+    "percentage": "{{percentage}}%",
+    "amount": "¥{{amount}}"
+  },
+  "comparison": {
+    "budget": "Budget",
+    "actual": "Actual",
+    "difference": "Difference"
+  },
+  "empty": {
+    "title": "No data",
+    "description": "Add transactions to see reports"
+  },
+  "export": {
+    "title": "Export",
+    "csv": "Download as CSV",
+    "period": "Select period"
+  }
+}

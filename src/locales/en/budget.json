@@ -1,0 +1,64 @@
+{
+  "title": "Budget",
+  "subtitle": "Manage your monthly budget",
+  "total": {
+    "title": "Total Budget",
+    "set": "Set total budget",
+    "used": "Used",
+    "remaining": "Remaining"
+  },
+  "category": {
+    "title": "Category Budget",
+    "setBudget": "Set budget",
+    "noBudget": "Not set",
+    "overBudget": "Over budget"
+  },
+  "status": {
+    "safe": "On track",
+    "warning": "Warning",
+    "danger": "Over",
+    "warningThreshold": "Reached 80% of budget",
+    "dangerThreshold": "Exceeded budget"
+  },
+  "settings": {
+    "carryOver": "Carry over",
+    "carryOverDescription": "Carry unused budget to next month",
+    "copyToNext": "Copy to next month",
+    "copyToNextDescription": "Copy this month's budget settings to next month"
+  },
+  "messages": {
+    "saved": "Budget saved",
+    "deleted": "Budget deleted",
+    "copiedToNext": "Budget copied to next month"
+  },
+  "empty": {
+    "title": "No budget set",
+    "description": "Set a budget to control your spending"
+  },
+  "progress": {
+    "used": "¥{{used}} / ¥{{total}}",
+    "percentage": "{{percentage}}% used"
+  },
+  "create": {
+    "title": "Set Budget",
+    "budgetType": "Budget Type",
+    "totalBudget": "Total Budget",
+    "categoryBudget": "By Category",
+    "selectCategory": "Select category",
+    "amount": "Budget Amount",
+    "amountPlaceholder": "Enter amount",
+    "carryOver": "Carry over unused budget to next month",
+    "save": "Save",
+    "cancel": "Cancel",
+    "validation": {
+      "amountRequired": "Please enter an amount",
+      "categoryRequired": "Please select a category"
+    }
+  },
+  "unbudgeted": {
+    "label": "No budget set",
+    "setBudget": "Set budget",
+    "spentThisMonth": "Spent this month"
+  },
+  "addBudget": "Add Budget"
+}

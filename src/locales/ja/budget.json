@@ -1,0 +1,64 @@
+{
+  "title": "予算",
+  "subtitle": "今月の予算を管理",
+  "total": {
+    "title": "全体予算",
+    "set": "全体予算を設定",
+    "used": "使用済み",
+    "remaining": "残り"
+  },
+  "category": {
+    "title": "カテゴリ別予算",
+    "setBudget": "予算を設定",
+    "noBudget": "未設定",
+    "overBudget": "予算超過"
+  },
+  "status": {
+    "safe": "順調",
+    "warning": "注意",
+    "danger": "超過",
+    "warningThreshold": "予算の80%に達しました",
+    "dangerThreshold": "予算を超過しました"
+  },
+  "settings": {
+    "carryOver": "繰越設定",
+    "carryOverDescription": "余った予算を来月に繰り越す",
+    "copyToNext": "来月へコピー",
+    "copyToNextDescription": "今月の予算設定を来月にコピーします"
+  },
+  "messages": {
+    "saved": "予算を保存しました",
+    "deleted": "予算を削除しました",
+    "copiedToNext": "来月に予算をコピーしました"
+  },
+  "empty": {
+    "title": "予算が設定されていません",
+    "description": "予算を設定して支出をコントロールしましょう"
+  },
+  "progress": {
+    "used": "{{used}}円 / {{total}}円",
+    "percentage": "{{percentage}}%使用"
+  },
+  "create": {
+    "title": "予算を設定",
+    "budgetType": "予算タイプ",
+    "totalBudget": "全体予算",
+    "categoryBudget": "カテゴリ別",
+    "selectCategory": "カテゴリを選択",
+    "amount": "予算金額",
+    "amountPlaceholder": "金額を入力",
+    "carryOver": "余った予算を来月に繰り越す",
+    "save": "保存する",
+    "cancel": "キャンセル",
+    "validation": {
+      "amountRequired": "金額を入力してください",
+      "categoryRequired": "カテゴリを選択してください"
+    }
+  },
+  "unbudgeted": {
+    "label": "予算未設定",
+    "setBudget": "設定する",
+    "spentThisMonth": "今月の支出"
+  },
+  "addBudget": "予算を追加"
+}
