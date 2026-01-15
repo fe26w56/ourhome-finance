@@ -7,6 +7,8 @@ import { useFilterStore } from '../src/stores/useFilterStore';
 import { useMonthlySummary, useCategoryStats, useDailyTrend } from '../src/hooks/useStats';
 import { useBudgets } from '../src/hooks/useBudgets';
 import { useCategories } from '../src/hooks/useCategories';
+import { useSettlementBalance } from '../src/hooks/useSettlement';
+import { useAuthStore } from '../src/stores/useAuthStore';
 import { formatAmount, getPreviousMonth, getNextMonth, formatMonth } from '../src/lib/utils';
 
 import Header from '../src/components/ui/Header';
@@ -18,7 +20,9 @@ type TabType = 'summary' | 'budget' | 'trend';
 const Reports: React.FC = () => {
   const navigate = useNavigate();
   const { t } = useTranslation('budget');
+  const { t: tReport } = useTranslation('report');
   const { currentGroupId, selectedMonth, setSelectedMonth } = useAppStore();
+  const { user } = useAuthStore();
   const [activeTab, setActiveTab] = useState<TabType>('summary');
   const [isGroupSelectorOpen, setIsGroupSelectorOpen] = useState(false);
   const [isCreateModalOpen, setIsCreateModalOpen] = useState(false);
@@ -32,6 +36,7 @@ const Reports: React.FC = () => {
   const { data: dailyTrend = [], isLoading: isLoadingTrend } = useDailyTrend(currentGroupId || '', yearMonth);
   const { data: budgets = [] } = useBudgets(currentGroupId || '');
   const { data: categories = [] } = useCategories(currentGroupId || '');
+  const { data: balanceData } = useSettlementBalance(currentGroupId || '');
 
   // 前月比計算
   const prevMonth = getPreviousMonth(yearMonth);
@@ -133,6 +138,15 @@ const Reports: React.FC = () => {
     if (!monthlySummary) return null;
     return monthlySummary.budgetRemaining;
   }, [monthlySummary]);
+
+  // 未精算残高の計算（現在のユーザーに関連する残高の合計）
+  const unsettledAmount = useMemo(() => {
+    if (!balanceData || !user) return 0;
+    const userBalances = balanceData.filter(
+      (b) => b.fromUserId === user.id || b.toUserId === user.id
+    );
+    return userBalances.reduce((sum, balance) => sum + balance.amount, 0);
+  }, [balanceData, user]);
 
   const handlePrevMonth = () => {
     if (selectedMonth) {
@@ -320,9 +334,9 @@ const Reports: React.FC = () => {
                   <div className="flex items-start gap-4 p-5 rounded-2xl bg-[#f0fdf4] dark:bg-green-900/20 border border-green-100 dark:border-green-800/50">
                     <div className="flex items-center justify-center shrink-0 w-10 h-10 rounded-full bg-white dark:bg-green-800 text-2xl shadow-sm">🎉</div>
                     <div>
-                      <h3 className="text-sm font-bold text-green-900 dark:text-green-100 mb-0.5">Under budget!</h3>
+                      <h3 className="text-sm font-bold text-green-900 dark:text-green-100 mb-0.5">{tReport('underBudget.title')}</h3>
                       <p className="text-sm text-green-700 dark:text-green-300 leading-snug">
-                        You've saved <span className="font-bold">{formatAmount(budgetRemaining)}</span> this month compared to your set limit.
+                        {tReport('underBudget.message', { amount: formatAmount(budgetRemaining) })}
                       </p>
                     </div>
                   </div>
@@ -344,6 +358,27 @@ const Reports: React.FC = () => {
                     </div>
                   </div>
                 )}
+
+                {/* Settlement History Link */}
+                <button
+                  onClick={() => navigate('/settlement')}
+                  className="w-full flex items-center justify-between p-4 rounded-2xl bg-white dark:bg-surface-dark border border-gray-200 dark:border-gray-700 shadow-sm active:scale-[0.98] transition-transform"
+                >
+                  <div className="flex items-center gap-3">
+                    <div className="w-10 h-10 rounded-full bg-orange-50 dark:bg-orange-900/20 flex items-center justify-center text-orange-500">
+                      <span className="material-symbols-outlined">history</span>
+                    </div>
+                    <div className="flex flex-col items-start">
+                      <span className="font-bold text-[#111812] dark:text-white">
+                        Settlement History
+                      </span>
+                      <span className="text-xs text-gray-500 dark:text-gray-400">
+                        未精算: {formatAmount(unsettledAmount)}
+                      </span>
+                    </div>
+                  </div>
+                  <span className="material-symbols-outlined text-gray-400">chevron_right</span>
+                </button>
               </>
           )
         )}

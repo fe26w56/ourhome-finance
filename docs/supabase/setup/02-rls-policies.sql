@@ -1,17 +1,29 @@
 -- ============================================
 -- Row Level Security (RLS) ポリシー
 -- ============================================
--- schema.sql の後に実行してください
+-- 01-schema.sql の後、03-functions.sql の前に実行してください
 -- ============================================
 
 -- ============================================
 -- 1. users テーブル
 -- ============================================
 
--- 自分の情報は閲覧可能
-CREATE POLICY "users_select_own" ON users
+-- 自分 + 同じグループのメンバーのユーザー情報を閲覧可能
+CREATE POLICY "users_select_group_members" ON users
   FOR SELECT
-  USING (auth.uid() = id);
+  USING (
+    auth.uid() = id
+    OR
+    id IN (
+      SELECT gm.user_id
+      FROM group_members gm
+      WHERE gm.group_id IN (
+        SELECT group_id 
+        FROM group_members 
+        WHERE user_id = auth.uid()
+      )
+    )
+  );
 
 -- 認証済みユーザーは自分のレコードを作成可能（OAuth初回ログイン時）
 CREATE POLICY "users_insert_own" ON users
@@ -34,6 +46,14 @@ CREATE POLICY "groups_select_member" ON groups
     id IN (
       SELECT group_id FROM group_members WHERE user_id = auth.uid()
     )
+  );
+
+-- 招待コードでグループを検索可能（グループ参加機能用）
+CREATE POLICY "groups_select_by_invite_code" ON groups
+  FOR SELECT
+  USING (
+    auth.uid() IS NOT NULL 
+    AND invite_code IS NOT NULL
   );
 
 -- owner/adminのみ作成可能（実際はアプリ側で制御）
@@ -63,15 +83,15 @@ CREATE POLICY "groups_delete_owner" ON groups
 -- ============================================
 
 -- 所属グループのメンバーは閲覧可能
+-- ※ SECURITY DEFINER関数 get_user_group_ids を使用してRLS自己参照問題を回避
+-- ※ この関数は 03-functions.sql で定義されています
 CREATE POLICY "group_members_select_member" ON group_members
   FOR SELECT
   USING (
-    group_id IN (
-      SELECT group_id FROM group_members WHERE user_id = auth.uid()
-    )
+    group_id IN (SELECT get_user_group_ids(auth.uid()))
   );
 
--- owner/adminのみ追加可能
+-- owner/adminのみ他メンバーを追加可能
 CREATE POLICY "group_members_insert_admin" ON group_members
   FOR INSERT
   WITH CHECK (
@@ -79,6 +99,14 @@ CREATE POLICY "group_members_insert_admin" ON group_members
       SELECT group_id FROM group_members
       WHERE user_id = auth.uid() AND role IN ('owner', 'admin')
     )
+  );
+
+-- 認証済みユーザーは自分自身をメンバーとして追加可能（招待コード参加用）
+CREATE POLICY "group_members_insert_self" ON group_members
+  FOR INSERT
+  WITH CHECK (
+    auth.uid() = user_id
+    AND auth.uid() IS NOT NULL
   );
 
 -- owner/adminのみ更新可能

@@ -368,6 +368,7 @@ const Home: React.FC = () => {
                 const isToday = dateStr === 'Today';
                 const categoryName = category.name || '未分類';
                 const paidByName = transaction.paidByUser?.displayName || 'Unknown';
+                const initial = paidByName.charAt(0).toUpperCase();
                 const timeStr = new Date(transaction.createdAt).toLocaleTimeString('en-US', {
                   hour: 'numeric',
                   minute: '2-digit',
@@ -381,20 +382,25 @@ const Home: React.FC = () => {
                   >
                     <div className="flex items-center gap-4">
                       <div 
-                        className="w-12 h-12 rounded-full flex items-center justify-center"
+                        className="relative w-12 h-12 rounded-2xl flex items-center justify-center"
                         style={{ 
                           backgroundColor: `${category.color}20`,
                           color: category.color 
                         }}
                       >
                         <span className="material-symbols-outlined">{category.icon || 'category'}</span>
+                        <div className="absolute -bottom-1 -right-1 size-5 bg-white dark:bg-background-dark rounded-full flex items-center justify-center p-0.5 shadow-sm">
+                          <div className="w-full h-full rounded-full bg-indigo-100 text-[8px] font-bold text-indigo-700 flex items-center justify-center">
+                            {initial}
+                          </div>
+                        </div>
                       </div>
                       <div className="flex flex-col">
                         <span className="font-bold text-slate-900 dark:text-slate-100 text-sm">
                           {transaction.memo || categoryName}
                         </span>
                         <span className="text-slate-400 text-xs">
-                          {isToday ? timeStr : dateStr} • {categoryName}
+                          {isToday ? timeStr : dateStr}
                         </span>
                       </div>
                     </div>

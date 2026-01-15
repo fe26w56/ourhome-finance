@@ -6,7 +6,7 @@ import { useAppStore } from '../src/stores/useAppStore';
 import { useCategories } from '../src/hooks/useCategories';
 import { useMembers } from '../src/hooks/useMembers';
 import { useBudgets } from '../src/hooks/useBudgets';
-import { formatAmount, parseDate, getMonthRange } from '../src/lib/utils';
+import { formatAmount, parseDate, getMonthRange, formatCurrency, formatRelativeDate } from '../src/lib/utils';
 import { TransactionWithDetails } from '../src/services/transactionService';
 import { motion, AnimatePresence } from 'framer-motion';
 import { FilteredSummaryCard, FixedFilterFooter, CategoryBreakdown } from '../src/components/history';
@@ -171,7 +171,7 @@ const History: React.FC = () => {
           sortedDates.map((dateKey) => (
             <React.Fragment key={dateKey}>
               <div className="sticky top-0 z-10 bg-background-light/95 dark:bg-background-dark/95 backdrop-blur-sm px-5 py-3 border-b border-gray-50 dark:border-gray-800/50">
-                <h4 className="text-primary text-xs font-bold uppercase tracking-wider">{formatDateLabel(dateKey)}</h4>
+                <h4 className="text-xs font-bold uppercase tracking-wider" style={{ color: 'rgba(17, 24, 18, 1)' }}>{formatDateLabel(dateKey)}</h4>
               </div>
               <div className="px-2 pb-2 space-y-1">
                 {groupedTransactions[dateKey]
@@ -228,30 +228,29 @@ const TransactionItem: React.FC<{
   const paidByMember = members.find((m) => m.userId === transaction.paidBy);
   const paidByName = paidByMember?.user.displayName || 'Unknown';
   const initial = paidByName.charAt(0).toUpperCase();
-  const isPositive = transaction.type === 'income';
-  const time = new Date(transaction.createdAt).toLocaleTimeString('en-US', { hour: 'numeric', minute: '2-digit' });
-
-  // カテゴリの色を取得（簡易実装）
-  const colorMap: Record<string, string> = {
-    orange: 'orange',
-    blue: 'blue',
-    emerald: 'emerald',
-    purple: 'purple',
-    red: 'red',
-    gray: 'gray',
-  };
-  const color = colorMap[transaction.category.color] || 'gray';
+  const category = transaction.category || { name: '未分類', icon: 'category', color: '#73F590' };
+  const categoryName = category.name || '未分類';
+  const dateStr = formatRelativeDate(transaction.date);
+  const isToday = dateStr === 'Today';
+  const timeStr = new Date(transaction.createdAt).toLocaleTimeString('en-US', {
+    hour: 'numeric',
+    minute: '2-digit',
+  });
 
   return (
     <div 
       onClick={() => navigate(`/add?edit=${transaction.id}`)}
-      className="group flex items-center justify-between p-3 rounded-xl hover:bg-surface-light dark:hover:bg-surface-dark/50 transition-colors cursor-pointer"
+      className="group flex items-center justify-between p-3 rounded-2xl hover:bg-slate-50 dark:hover:bg-white/5 transition-colors border border-transparent hover:border-slate-100 dark:hover:border-slate-800 cursor-pointer"
     >
       <div className="flex items-center gap-4">
-        <div
-          className={`relative flex items-center justify-center shrink-0 size-12 rounded-2xl bg-${color}-50 dark:bg-${color}-900/20 text-${color}-600 dark:text-${color}-400`}
+        <div 
+          className="relative w-12 h-12 rounded-2xl flex items-center justify-center"
+          style={{ 
+            backgroundColor: `${category.color}20`,
+            color: category.color 
+          }}
         >
-          <span className="material-symbols-outlined">{transaction.category.icon || 'receipt'}</span>
+          <span className="material-symbols-outlined">{category.icon || 'category'}</span>
           <div className="absolute -bottom-1 -right-1 size-5 bg-white dark:bg-background-dark rounded-full flex items-center justify-center p-0.5 shadow-sm">
             <div className="w-full h-full rounded-full bg-indigo-100 text-[8px] font-bold text-indigo-700 flex items-center justify-center">
               {initial}
@@ -259,20 +258,22 @@ const TransactionItem: React.FC<{
           </div>
         </div>
         <div className="flex flex-col">
-          <p className="text-slate-900 dark:text-white text-base font-bold leading-tight mb-0.5">
-            {transaction.memo || transaction.category.name}
-          </p>
-          <div className="flex items-center gap-1.5">
-            <p className="text-slate-500 dark:text-slate-400 text-xs font-medium">{transaction.category.name}</p>
-          </div>
+          <span className="font-bold text-slate-900 dark:text-slate-100 text-sm">
+            {transaction.memo || categoryName}
+          </span>
+          <span className="text-slate-400 text-xs">
+            {isToday ? timeStr : dateStr}
+          </span>
         </div>
       </div>
       <div className="text-right">
-        <p className={`text-base font-bold ${isPositive ? 'text-emerald-600 dark:text-emerald-400' : 'text-slate-900 dark:text-white'}`}>
-          {isPositive ? '+' : '-'}
-          {formatAmount(transaction.amount)}
-        </p>
-        <p className="text-slate-400 dark:text-slate-500 text-xs font-medium">{time}</p>
+        <span className="block font-mono font-bold text-slate-900 dark:text-slate-100 text-sm">
+          {formatCurrency(transaction.amount, { 
+            showSign: true, 
+            type: transaction.type 
+          })}
+        </span>
+        <span className="text-xs text-slate-400">{paidByName}</span>
       </div>
     </div>
   );

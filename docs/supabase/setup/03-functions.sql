@@ -1,11 +1,27 @@
 -- ============================================
 -- RPC関数とビュー
 -- ============================================
--- schema.sql と rls-policies.sql の後に実行してください
+-- 01-schema.sql と 02-rls-policies.sql の後に実行してください
 -- ============================================
 
 -- ============================================
--- 0. トリガー関数
+-- 0. ヘルパー関数（RLSポリシーで使用）
+-- ============================================
+
+-- ユーザーが所属するグループIDを取得する関数
+-- SECURITY DEFINERを使用してRLSをバイパス
+-- ※ group_members の自己参照問題を回避するために必要
+CREATE OR REPLACE FUNCTION get_user_group_ids(p_user_id uuid)
+RETURNS SETOF uuid
+LANGUAGE sql
+SECURITY DEFINER
+STABLE
+AS $$
+  SELECT group_id FROM group_members WHERE user_id = p_user_id;
+$$;
+
+-- ============================================
+-- 1. トリガー関数
 -- ============================================
 
 -- 招待コード生成関数（トリガー用）
@@ -39,7 +55,7 @@ CREATE TRIGGER generate_invite_code_trigger
   EXECUTE FUNCTION generate_invite_code();
 
 -- ============================================
--- 1. ビュー
+-- 2. ビュー
 -- ============================================
 
 -- 月次サマリービュー
@@ -68,7 +84,7 @@ WHERE ts.user_id != t.paid_by
 GROUP BY ts.user_id, t.paid_by, t.group_id;
 
 -- ============================================
--- 2. RPC関数
+-- 3. RPC関数
 -- ============================================
 
 -- 招待コード再生成

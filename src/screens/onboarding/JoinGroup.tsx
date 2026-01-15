@@ -95,7 +95,7 @@ const JoinGroup: React.FC = () => {
 
         <div className="mt-auto pb-6">
           <Button 
-            onClick={handleJoin} 
+            onClick={handleJoin}
             icon="arrow_forward"
             disabled={!inviteCode.trim() || isPending}
           >

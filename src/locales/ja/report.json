@@ -48,5 +48,9 @@
     "title": "エクスポート",
     "csv": "CSVでダウンロード",
     "period": "期間を選択"
+  },
+  "underBudget": {
+    "title": "予算内です！",
+    "message": "設定した上限と比較して、今月は{{amount}}節約できました。"
   }
 }

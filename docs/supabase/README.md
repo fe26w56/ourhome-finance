@@ -2,11 +2,27 @@
 
 このディレクトリには、Supabaseデータベースの設定に必要なSQLスクリプトが含まれています。
 
-## 📋 ファイル構成
+## 📁 ディレクトリ構成
 
-- `schema.sql` - テーブル定義、インデックス、トリガー
-- `rls-policies.sql` - Row Level Security (RLS) ポリシー
-- `functions.sql` - RPC関数とビュー
+```
+docs/supabase/
+├── README.md           # このファイル
+├── CHANGELOG.md        # 変更履歴
+│
+├── setup/              # 初期セットアップ（この順で実行）
+│   ├── 01-schema.sql       # テーブル定義、インデックス、トリガー
+│   ├── 02-rls-policies.sql # Row Level Security ポリシー
+│   └── 03-functions.sql    # RPC関数、ビュー、ヘルパー関数
+│
+├── migrations/         # スキーマ変更（必要に応じて）
+│   └── beneficiaries.sql   # 受益者機能追加
+│
+├── fixes/              # データ修正（既存データに問題がある場合）
+│   └── data-missing-group-owner.sql
+│
+└── utils/              # ユーティリティ（デバッグ用）
+    └── check-rls.sql       # RLSポリシー確認
+```
 
 ## 🚀 セットアップ手順
 
@@ -31,36 +47,15 @@ VITE_SUPABASE_ANON_KEY=your-anon-key
 
 Supabase Dashboard の SQL Editor で、以下の順序で実行してください：
 
-#### ステップ 1: スキーマ作成
-
-`schema.sql` の内容をコピーして実行します。
-
-これにより以下が作成されます：
-- ENUM型（member_role, transaction_type, category_type, goal_type, theme_type）
-- 11個のテーブル
-- インデックス
-- updated_at自動更新トリガー
-- RLS有効化
-
-#### ステップ 2: RLSポリシー設定
-
-`rls-policies.sql` の内容をコピーして実行します。
-
-これにより、各テーブルに対するRow Level Securityポリシーが設定されます。
-
-#### ステップ 3: 関数とビューの作成
-
-`functions.sql` の内容をコピーして実行します。
-
-これにより以下が作成されます：
-- ビュー（v_monthly_summary, v_settlement_balance）
-- RPC関数（regenerate_invite_code, copy_budgets_to_next_month, get_settlement_balance, record_settlement, get_monthly_summary, get_category_stats, get_daily_trend）
+| 順序 | ファイル | 説明 |
+|-----|---------|-----|
+| 1 | `setup/01-schema.sql` | テーブル、ENUM、インデックス、トリガー作成 |
+| 2 | `setup/02-rls-policies.sql` | RLSポリシー設定 |
+| 3 | `setup/03-functions.sql` | 関数、ビュー作成 |
 
 ## ✅ 確認事項
 
 ### テーブル確認
-
-SQL Editorで以下を実行して、テーブルが正しく作成されたか確認：
 
 ```sql
 SELECT table_name 
@@ -69,18 +64,11 @@ WHERE table_schema = 'public'
 ORDER BY table_name;
 ```
 
-以下の11テーブルが表示されるはずです：
-- budgets
-- categories
-- goal_contributions
-- goals
-- group_members
-- groups
-- settlements
-- transaction_splits
-- transactions
-- user_settings
-- users
+期待されるテーブル（11個）：
+- budgets, categories, goal_contributions, goals
+- group_members, groups, settlements
+- transaction_splits, transactions
+- user_settings, users
 
 ### RLSポリシー確認
 
@@ -105,40 +93,47 @@ ORDER BY routine_name;
 
 ### OAuth設定（Google/Apple）
 
-Supabase Dashboard > Authentication > Providers で以下を設定：
+Supabase Dashboard > Authentication > Providers で設定：
 
 #### Google OAuth
 1. Google Cloud ConsoleでOAuth 2.0クライアントIDを作成
 2. リダイレクトURI: `https://your-project.supabase.co/auth/v1/callback`
 3. Supabase DashboardでGoogleプロバイダーを有効化
-4. Client IDとSecretを設定
 
 #### Apple OAuth
 1. Apple DeveloperでService IDを作成
 2. リダイレクトURI: `https://your-project.supabase.co/auth/v1/callback`
 3. Supabase DashboardでAppleプロバイダーを有効化
-4. Service IDとSecret Keyを設定
 
-## 📝 注意事項
+## 📝 マイグレーション
 
-1. **usersテーブル**: Supabase Authと連携するため、`auth.users`テーブルにユーザーが作成されると自動的に`users`テーブルにもレコードが作成されるように、トリガーを設定することを推奨します（オプション）。
+新機能追加時は `migrations/` ディレクトリにファイルを追加：
 
-2. **招待コード**: `groups`テーブルの`invite_code`は、グループ作成時に自動生成されます。`regenerate_invite_code`関数を使用して再生成できます。
+| ファイル | 説明 |
+|---------|-----|
+| `beneficiaries.sql` | 取引の受益者（For Whom）機能追加 |
 
-3. **デフォルトカテゴリ**: グループ作成時にデフォルトカテゴリを自動生成する処理は、アプリケーション側で実装する必要があります。
+## 🔧 データ修正
 
-4. **ストレージ**: レシート画像の保存には、Supabase Storageを使用します。バケット名は`receipts`を推奨します。
+既存データに問題がある場合は `fixes/` ディレクトリのスクリプトを使用：
+
+| ファイル | 説明 |
+|---------|-----|
+| `data-missing-group-owner.sql` | グループオーナーがgroup_membersに未登録の場合の修正 |
 
 ## 🐛 トラブルシューティング
 
 ### エラー: "relation does not exist"
-- テーブルが作成されていない可能性があります。`schema.sql`を再実行してください。
+→ `setup/01-schema.sql` を実行してください
 
 ### エラー: "permission denied"
-- RLSポリシーが正しく設定されていない可能性があります。`rls-policies.sql`を再実行してください。
+→ `setup/02-rls-policies.sql` を再実行してください
 
 ### エラー: "function does not exist"
-- 関数が作成されていない可能性があります。`functions.sql`を再実行してください。
+→ `setup/03-functions.sql` を実行してください
+
+### デバッグ
+→ `utils/check-rls.sql` でRLS状態を確認
 
 ## 📚 参考資料
 

@@ -26,7 +26,7 @@ export async function getSettlementBalance(
   groupId: string
 ): Promise<SettlementBalance[]> {
   const { data, error } = await supabase.rpc('get_settlement_balance', {
-    p_group_id: groupId,
+    group_uuid: groupId,
   });
 
   if (error) {
@@ -57,13 +57,13 @@ export async function recordSettlement(
   }
 ): Promise<void> {
   const { error } = await supabase.rpc('record_settlement', {
-    p_group_id: settlement.groupId,
-    p_from_user_id: settlement.fromUserId,
-    p_to_user_id: settlement.toUserId,
-    p_amount: settlement.amount,
-    p_settled_at: settlement.settledAt,
-    p_method: settlement.method || null,
-    p_note: settlement.note || null,
+    group_uuid: settlement.groupId,
+    from_user_uuid: settlement.fromUserId,
+    to_user_uuid: settlement.toUserId,
+    settlement_amount: settlement.amount,
+    settlement_date: settlement.settledAt,
+    settlement_method: settlement.method || null,
+    settlement_note: settlement.note || null,
   });
 
   if (error) {

@@ -2,10 +2,11 @@
  * OAuth認証コールバック画面
  * Google/Apple認証後にリダイレクトされる画面
  * 
- * 処理フロー:
+ * 処理フロー（修正版 - トリガーベース）:
  * 1. セッションを取得
- * 2. usersテーブルにユーザーレコードがなければ作成
- * 3. ホーム画面へリダイレクト（グループチェックはProtectedRouteが担当）
+ * 2. usersテーブルへのINSERTはデータベーストリガー（handle_new_user）に任せる
+ * 3. ユーザー情報の設定はonAuthStateChangeに委譲（useAuthが一元管理）
+ * 4. ホーム画面へリダイレクト（グループチェックはProtectedRouteが担当）
  */
 
 import { useEffect, useRef } from 'react';
@@ -13,12 +14,10 @@ import { useNavigate } from 'react-router-dom';
 import { supabase } from '../../lib/supabase';
 import { useAppStore } from '../../stores/useAppStore';
 import { useAuthStore } from '../../stores/useAuthStore';
-import type { User } from '../../types/database';
 
 export function AuthCallback() {
   const navigate = useNavigate();
   const { showToast } = useAppStore();
-  const { setUser } = useAuthStore();
   const hasHandledCallback = useRef(false);
 
   useEffect(() => {
@@ -30,88 +29,128 @@ export function AuthCallback() {
 
     const handleAuthCallback = async () => {
       try {
-        // URLからセッションを取得
-        const { data: { session }, error: sessionError } = await supabase.auth.getSession();
-
-        if (sessionError) {
-          throw new Error('認証に失敗しました');
+        // #region agent log
+        const preCallbackStore = { user: useAppStore.getState(), authUser: useAuthStore.getState().user?.id, authSession: useAuthStore.getState().session?.user?.id };
+        const preCallbackLocalStorage = Object.keys(localStorage).filter(k => k.includes('sb-') || k.includes('supabase')).map(k => ({key: k, length: localStorage.getItem(k)?.length}));
+        fetch('http://127.0.0.1:7242/ingest/a6e9385b-8e06-4366-a440-e52a9ac06ff6',{method:'POST',headers:{'Content-Type':'application/json'},body:JSON.stringify({location:'AuthCallback.tsx:29',message:'[B,D] Callback開始前',data:{preCallbackStore,preCallbackLocalStorage},timestamp:Date.now(),sessionId:'debug-session',runId:'run1',hypothesisId:'B,D'})}).catch(()=>{});
+        // #endregion
+        
+        // HashRouter使用時の二重ハッシュ問題に対処
+        // URLが #/auth/callback#access_token=... となるため、手動でトークンを抽出
+        const hashParts = window.location.hash.split('#');
+        let tokenParams: URLSearchParams | null = null;
+        
+        // 2番目以降のハッシュ部分からトークンパラメータを抽出
+        if (hashParts.length > 2) {
+          tokenParams = new URLSearchParams(hashParts.slice(2).join('#'));
         }
 
-        if (!session?.user) {
-          throw new Error('認証に失敗しました');
-        }
+        // #region agent log
+        const hasAccessToken = tokenParams?.has('access_token') || false;
+        const hasRefreshToken = tokenParams?.has('refresh_token') || false;
+        fetch('http://127.0.0.1:7242/ingest/a6e9385b-8e06-4366-a440-e52a9ac06ff6',{method:'POST',headers:{'Content-Type':'application/json'},body:JSON.stringify({location:'AuthCallback.tsx:44',message:'[F] トークンパラメータ抽出',data:{hasAccessToken,hasRefreshToken,hashParts:hashParts.length,urlHash:window.location.hash},timestamp:Date.now(),sessionId:'debug-session',runId:'run1',hypothesisId:'F'})}).catch(()=>{});
+        // #endregion
 
-        const user = session.user;
+        // トークンパラメータがある場合、Supabaseにセッションを設定させる
+        if (tokenParams?.has('access_token') && tokenParams?.has('refresh_token')) {
+          const accessToken = tokenParams.get('access_token')!;
+          const refreshToken = tokenParams.get('refresh_token')!;
+          
+          // #region agent log
+          fetch('http://127.0.0.1:7242/ingest/a6e9385b-8e06-4366-a440-e52a9ac06ff6',{method:'POST',headers:{'Content-Type':'application/json'},body:JSON.stringify({location:'AuthCallback.tsx:55',message:'[F] setSession呼び出し前',data:{hasTokens:true},timestamp:Date.now(),sessionId:'debug-session',runId:'run1',hypothesisId:'F'})}).catch(()=>{});
+          // #endregion
 
-        // usersテーブルにユーザーが存在するか確認
-        const { data: existingUser, error: checkError } = await supabase
-          .from('users')
-          .select('*')
-          .eq('id', user.id)
-          .single();
+          // トークンからセッションを設定
+          const { data, error: setSessionError } = await supabase.auth.setSession({
+            access_token: accessToken,
+            refresh_token: refreshToken,
+          });
 
-        // ユーザーが存在しない場合は作成
-        let userData: User;
-        if (!existingUser || checkError?.code === 'PGRST116') {
-          const displayName = user.user_metadata?.full_name || 
-                            user.user_metadata?.name || 
-                            user.email?.split('@')[0] || 
-                            'ユーザー';
+          // #region agent log
+          const preSetSessionAppStore = useAppStore.getState();
+          fetch('http://127.0.0.1:7242/ingest/a6e9385b-8e06-4366-a440-e52a9ac06ff6',{method:'POST',headers:{'Content-Type':'application/json'},body:JSON.stringify({location:'AuthCallback.tsx:65',message:'[F,H] setSession呼び出し後',data:{success:!!data.session,userId:data.session?.user?.id,error:setSessionError?.message,preGroupId:preSetSessionAppStore.currentGroupId,preGroupName:preSetSessionAppStore.currentGroup?.name},timestamp:Date.now(),sessionId:'debug-session',runId:'run1',hypothesisId:'F,H'})}).catch(()=>{});
+          // #endregion
 
-          const newUserData = {
-            id: user.id,
-            email: user.email!,
-            display_name: displayName,
-            avatar_url: user.user_metadata?.avatar_url || null,
-          };
-
-          const { error: insertError } = await supabase
-            .from('users')
-            .insert(newUserData)
-            .select();
-
-          if (insertError) {
-            console.error('Failed to create user record:', insertError);
-            throw new Error('ユーザー情報の作成に失敗しました');
+          if (setSessionError) {
+            throw new Error('セッションの設定に失敗しました');
           }
 
-          // 作成したユーザー情報をストアに設定
-          userData = {
-            id: newUserData.id,
-            email: newUserData.email,
-            displayName: newUserData.display_name,
-            avatarUrl: newUserData.avatar_url,
-            createdAt: new Date().toISOString(),
-            updatedAt: new Date().toISOString(),
-          };
+          if (!data.session?.user) {
+            throw new Error('認証に失敗しました');
+          }
+
+          const user = data.session.user;
+
+          // persistミドルウェアがローカルストレージから古いグループ情報を復元している可能性があるため、
+          // 新しいユーザーでログインした際は、グループ情報を強制的にクリアする
+          const currentAppStore = useAppStore.getState();
+          if (currentAppStore.currentGroupId) {
+            // #region agent log
+            fetch('http://127.0.0.1:7242/ingest/a6e9385b-8e06-4366-a440-e52a9ac06ff6',{method:'POST',headers:{'Content-Type':'application/json'},body:JSON.stringify({location:'AuthCallback.tsx:82',message:'[H] OAuth後に古いグループ情報をクリア',data:{oldGroupId:currentAppStore.currentGroupId,oldGroupName:currentAppStore.currentGroup?.name,newUserId:user.id},timestamp:Date.now(),sessionId:'debug-session',runId:'run1',hypothesisId:'H'})}).catch(()=>{});
+            // #endregion
+            
+            // グループ情報をクリア
+            useAppStore.getState().reset();
+            
+            // ローカルストレージからも削除
+            localStorage.removeItem('ourhome-app-store');
+
+            // #region agent log
+            const postClearAppStore = useAppStore.getState();
+            fetch('http://127.0.0.1:7242/ingest/a6e9385b-8e06-4366-a440-e52a9ac06ff6',{method:'POST',headers:{'Content-Type':'application/json'},body:JSON.stringify({location:'AuthCallback.tsx:94',message:'[H] クリア後のAppStore',data:{postGroupId:postClearAppStore.currentGroupId,postGroupName:postClearAppStore.currentGroup?.name},timestamp:Date.now(),sessionId:'debug-session',runId:'run1',hypothesisId:'H'})}).catch(()=>{});
+            // #endregion
+          }
+
+          // usersテーブルへのINSERTはデータベーストリガー（handle_new_user）が自動実行
+          // フロントエンドからのINSERTは不要（RLSエラーを回避）
+          console.log('AuthCallback: User authenticated, trigger will handle user creation');
+
+          // #region agent log
+          const preWaitStore = { authUser: useAuthStore.getState().user?.id, authSession: useAuthStore.getState().session?.user?.id };
+          fetch('http://127.0.0.1:7242/ingest/a6e9385b-8e06-4366-a440-e52a9ac06ff6',{method:'POST',headers:{'Content-Type':'application/json'},body:JSON.stringify({location:'AuthCallback.tsx:83',message:'[E] 1秒待機前',data:{authenticatedUserId:user.id,preWaitStore},timestamp:Date.now(),sessionId:'debug-session',runId:'run1',hypothesisId:'E'})}).catch(()=>{});
+          // #endregion
+
+          // ユーザー情報の設定はonAuthStateChange（useAuth.loadUser）に委譲
+          // トリガーがユーザーを作成するのを待つため、少し待機
+          await new Promise(resolve => setTimeout(resolve, 1000));
+
+          // #region agent log
+          const postWaitStore = { authUser: useAuthStore.getState().user?.id, authSession: useAuthStore.getState().session?.user?.id };
+          fetch('http://127.0.0.1:7242/ingest/a6e9385b-8e06-4366-a440-e52a9ac06ff6',{method:'POST',headers:{'Content-Type':'application/json'},body:JSON.stringify({location:'AuthCallback.tsx:93',message:'[E] 1秒待機後',data:{authenticatedUserId:user.id,postWaitStore},timestamp:Date.now(),sessionId:'debug-session',runId:'run1',hypothesisId:'E'})}).catch(()=>{});
+          // #endregion
+
+          // ホーム画面へリダイレクト
+          // グループの存在チェックとオンボーディングへのリダイレクトはProtectedRouteが担当
+          // useAuth.loadUserがユーザー情報を設定するため、ProtectedRouteで正しく認証状態を判定できる
+          showToast('ログインしました', 'success');
+          navigate('/');
         } else {
-          // 既存ユーザー情報をストアに設定
-          userData = {
-            id: existingUser.id,
-            email: existingUser.email,
-            displayName: existingUser.display_name,
-            avatarUrl: existingUser.avatar_url,
-            createdAt: existingUser.created_at,
-            updatedAt: existingUser.updated_at,
-          };
+          // トークンパラメータがない場合、通常のgetSessionフォールバック
+          const { data: { session }, error: sessionError } = await supabase.auth.getSession();
+
+          if (sessionError || !session?.user) {
+            throw new Error('認証に失敗しました');
+          }
+
+          const user = session.user;
+          console.log('AuthCallback: User authenticated via getSession');
+          
+          await new Promise(resolve => setTimeout(resolve, 1000));
+          showToast('ログインしました', 'success');
+          navigate('/');
         }
-
-        // ユーザー情報をストアに設定
-        setUser(userData);
-
-        // ホーム画面へリダイレクト
-        // グループの存在チェックとオンボーディングへのリダイレクトはProtectedRouteが担当
-        showToast('ログインしました', 'success');
-        navigate('/');
       } catch (error: any) {
         console.error('Auth callback error:', error);
+        // #region agent log
+        fetch('http://127.0.0.1:7242/ingest/a6e9385b-8e06-4366-a440-e52a9ac06ff6',{method:'POST',headers:{'Content-Type':'application/json'},body:JSON.stringify({location:'AuthCallback.tsx:78',message:'[F] catchブロック実行',data:{errorMessage:error?.message,errorStack:error?.stack},timestamp:Date.now(),sessionId:'debug-session',runId:'run1',hypothesisId:'F'})}).catch(()=>{});
+        // #endregion
         showToast('認証処理でエラーが発生しました', 'error');
         navigate('/auth/login');
       }
     };
 
     handleAuthCallback();
-  }, [navigate, showToast, setUser]);
+  }, [navigate, showToast]);
 
   return (
     <div className="min-h-screen flex items-center justify-center bg-white px-4">

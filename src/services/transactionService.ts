@@ -354,6 +354,32 @@ export async function createTransactionWithBeneficiaries(
   // 受益者を保存
   await saveBeneficiaries(txData.id, beneficiaryIds);
 
+  // transaction_splitsを作成（精算計算用）
+  // 支払者を除いた受益者に対して均等に分割
+  if (isShared && beneficiaryIds.length > 0) {
+    const splitAmount = transaction.amount / beneficiaryIds.length;
+    const splitsToCreate = beneficiaryIds
+      .filter(id => id !== transaction.paidBy) // 支払者は除外
+      .map(userId => ({
+        transaction_id: txData.id,
+        user_id: userId,
+        amount: splitAmount,
+        percentage: null,
+        is_settled: false,
+      }));
+
+    if (splitsToCreate.length > 0) {
+      const { error: splitsError } = await supabase
+        .from('transaction_splits')
+        .insert(splitsToCreate);
+
+      if (splitsError) {
+        console.error('Failed to create transaction splits:', splitsError);
+        // エラーが発生しても取引は作成済みなので、続行
+      }
+    }
+  }
+
   // 詳細情報を取得して返す
   return getTransaction(txData.id);
 }
@@ -398,6 +424,43 @@ export async function updateTransactionWithBeneficiaries(
 
   // 受益者を更新
   await saveBeneficiaries(transactionId, beneficiaryIds);
+
+  // transaction_splitsを更新（精算計算用）
+  // 既存のsplitsを削除
+  const { error: deleteSplitsError } = await supabase
+    .from('transaction_splits')
+    .delete()
+    .eq('transaction_id', transactionId);
+
+  if (deleteSplitsError) {
+    console.error('Failed to delete existing transaction splits:', deleteSplitsError);
+  }
+
+  // 新しいsplitsを作成
+  if (isShared && beneficiaryIds.length > 0) {
+    const currentTransaction = await getTransaction(transactionId);
+    const splitAmount = currentTransaction.amount / beneficiaryIds.length;
+    const splitsToCreate = beneficiaryIds
+      .filter(id => id !== (updates.paidBy || currentTransaction.paidBy)) // 支払者は除外
+      .map(userId => ({
+        transaction_id: transactionId,
+        user_id: userId,
+        amount: splitAmount,
+        percentage: null,
+        is_settled: false,
+      }));
+
+    if (splitsToCreate.length > 0) {
+      const { error: splitsError } = await supabase
+        .from('transaction_splits')
+        .insert(splitsToCreate);
+
+      if (splitsError) {
+        console.error('Failed to create transaction splits:', splitsError);
+        // エラーが発生しても取引は更新済みなので、続行
+      }
+    }
+  }
 
   // 詳細情報を取得して返す
   return getTransaction(transactionId);

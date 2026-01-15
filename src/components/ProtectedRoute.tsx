@@ -28,11 +28,11 @@ export function ProtectedRoute({ children, requireGroup = true }: ProtectedRoute
   const [isCheckingGroup, setIsCheckingGroup] = useState(true);
   const [hasGroup, setHasGroup] = useState(false);
 
-  // セッションがある場合、グループを確認
+  // セッションまたはユーザーがある場合、グループを確認
   useEffect(() => {
     const checkGroup = async () => {
-      // 認証ローディング中、またはセッションがない場合はスキップ
-      if (authLoading || !session?.user) {
+      // 認証ローディング中、またはユーザー情報がない場合はスキップ
+      if (authLoading || !user) {
         setIsCheckingGroup(false);
         return;
       }
@@ -46,9 +46,34 @@ export function ProtectedRoute({ children, requireGroup = true }: ProtectedRoute
 
       // 既にグループが選択されている場合
       if (currentGroupId) {
-        setIsCheckingGroup(false);
-        setHasGroup(true);
-        return;
+        // ただし、選択されているグループが現在のユーザーに属していない場合はクリア
+        // （別のアカウントでログインした際に古いグループ情報が残っている場合の対策）
+        try {
+          const { data: membership, error: membershipError } = await supabase
+            .from('group_members')
+            .select('*')
+            .eq('group_id', currentGroupId)
+            .eq('user_id', user.id)
+            .single();
+
+          if (membershipError || !membership) {
+            // 現在のユーザーがこのグループに所属していない場合、グループ情報をクリア
+            console.log('ProtectedRoute: Clearing old group info (user not a member)');
+            useAppStore.getState().reset();
+            localStorage.removeItem('ourhome-app-store');
+            // グループがないとして次の処理へ
+          } else {
+            // ユーザーがこのグループに所属している場合、そのまま使用
+            setIsCheckingGroup(false);
+            setHasGroup(true);
+            return;
+          }
+        } catch (error) {
+          console.error('Error checking group membership:', error);
+          // エラーの場合もクリアして安全側に倒す
+          useAppStore.getState().reset();
+          localStorage.removeItem('ourhome-app-store');
+        }
       }
 
       try {
@@ -56,7 +81,7 @@ export function ProtectedRoute({ children, requireGroup = true }: ProtectedRoute
         const { data: groupMembersData, error } = await supabase
           .from('group_members')
           .select('groups(*)')
-          .eq('user_id', session.user.id);
+          .eq('user_id', user.id);
 
         if (error) {
           console.error('Failed to check groups:', error);
@@ -83,7 +108,7 @@ export function ProtectedRoute({ children, requireGroup = true }: ProtectedRoute
     };
 
     checkGroup();
-  }, [session, authLoading, requireGroup, currentGroupId, setCurrentGroup]);
+  }, [user, authLoading, requireGroup, currentGroupId, setCurrentGroup]);
 
   // ローディング中
   if (authLoading || isCheckingGroup) {
@@ -98,7 +123,8 @@ export function ProtectedRoute({ children, requireGroup = true }: ProtectedRoute
   }
 
   // 未認証 → ログインへ
-  if (!session) {
+  // メール確認が有効な場合、sessionがnullでもuserが設定されている可能性がある
+  if (!session && !user) {
     return <Navigate to="/auth/login" state={{ from: location }} replace />;
   }
 

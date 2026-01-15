@@ -34,13 +34,14 @@ export const useAuthStore = create<AuthState>((set) => ({
   setUser: (user) =>
     set({
       user,
-      isAuthenticated: user !== null,
+      // isAuthenticatedはsessionのみで判定するため、ここでは設定しない
+      // これにより、認証状態とユーザー情報の管理を分離
     }),
 
   setSession: (session) =>
     set({
       session,
-      isAuthenticated: session !== null,
+      isAuthenticated: session !== null, // sessionのみで認証状態を判定
     }),
 
   setLoading: (isLoading) => set({ isLoading }),

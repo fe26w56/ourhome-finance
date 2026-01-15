@@ -88,8 +88,11 @@ const Calendar: React.FC = () => {
       });
     }
 
-    // 次月の日付（空白埋め、6週分確保）
-    const remainingDays = 42 - days.length;
+    // 次月の日付（空白埋め、週の最後まで）
+    const lastDayOfMonth = new Date(year, month, 0);
+    const lastDayOfWeek = lastDayOfMonth.getDay();
+    const remainingDays = 6 - lastDayOfWeek;
+
     for (let i = 1; i <= remainingDays; i++) {
       const date = new Date(year, month, i);
       days.push({
@@ -193,7 +196,7 @@ const Calendar: React.FC = () => {
             </div>
           ))}
         </div>
-        <div className="grid grid-cols-7 gap-y-4 gap-x-1">
+        <div className="grid grid-cols-7 gap-y-2 gap-x-1">
           {calendarDays.map((day, index) => {
             const isSelected = selectedCalendarDate === day.dateStr;
             const isToday = day.dateStr === today && day.isCurrentMonth;
@@ -204,12 +207,12 @@ const Calendar: React.FC = () => {
               <div
                 key={index}
                 onClick={() => handleDateClick(day.dateStr, day.isCurrentMonth)}
-                className={`flex flex-col items-center gap-0.5 group cursor-pointer ${isSelected ? 'relative' : ''} ${
+                className={`flex flex-col items-center gap-0 group cursor-pointer ${isSelected ? 'relative' : ''} ${
                   !day.isCurrentMonth ? 'opacity-30' : ''
                 }`}
               >
                 <div
-                  className={`h-10 w-10 flex items-center justify-center rounded-full text-sm font-medium transition-colors ${
+                  className={`h-9 w-9 flex items-center justify-center rounded-full text-sm font-medium transition-colors ${
                     isSelected
                       ? 'bg-primary text-[#111812] shadow-lg z-10 scale-105 font-bold'
                       : isToday
@@ -269,6 +272,7 @@ const Calendar: React.FC = () => {
               <div className="flex flex-col gap-3">
                 {selectedDateTransactions.map((tx) => {
                   const paidByName = tx.paidByUser?.displayName || 'Unknown';
+                  const initial = paidByName.charAt(0).toUpperCase();
                   const time = new Date(tx.createdAt).toLocaleTimeString('en-US', {
                     hour: 'numeric',
                     minute: '2-digit',
@@ -283,20 +287,25 @@ const Calendar: React.FC = () => {
                     >
                       <div className="flex items-center gap-4">
                         <div 
-                          className="w-12 h-12 rounded-full flex items-center justify-center"
+                          className="relative w-12 h-12 rounded-2xl flex items-center justify-center"
                           style={{ 
                             backgroundColor: `${tx.category.color}20`,
                             color: tx.category.color 
                           }}
                         >
                           <span className="material-symbols-outlined">{tx.category.icon || 'category'}</span>
+                          <div className="absolute -bottom-1 -right-1 size-5 bg-white dark:bg-background-dark rounded-full flex items-center justify-center p-0.5 shadow-sm">
+                            <div className="w-full h-full rounded-full bg-indigo-100 text-[8px] font-bold text-indigo-700 flex items-center justify-center">
+                              {initial}
+                            </div>
+                          </div>
                         </div>
                         <div className="flex flex-col">
                           <span className="font-bold text-slate-900 dark:text-slate-100 text-sm">
                             {tx.memo || categoryName}
                           </span>
                           <span className="text-slate-400 text-xs">
-                            {time} • {categoryName}
+                            {time}
                           </span>
                         </div>
                       </div>

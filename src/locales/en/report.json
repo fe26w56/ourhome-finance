@@ -48,5 +48,9 @@
     "title": "Export",
     "csv": "Download as CSV",
     "period": "Select period"
+  },
+  "underBudget": {
+    "title": "Under budget!",
+    "message": "You've saved {{amount}} this month compared to your set limit."
   }
 }

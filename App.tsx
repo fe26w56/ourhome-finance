@@ -1,5 +1,5 @@
 import React from 'react';
-import { HashRouter, Routes, Route, useLocation } from 'react-router-dom';
+import { HashRouter, Routes, Route, useLocation, Navigate } from 'react-router-dom';
 import { AnimatePresence } from 'framer-motion';
 import { QueryClientProvider } from '@tanstack/react-query';
 import { queryClient } from './src/lib/queryClient';
@@ -37,6 +37,7 @@ import { useAppStore } from './src/stores/useAppStore';
 import { useAuth } from './src/hooks/useAuth';
 import { useOnlineStatus } from './src/hooks/useOnlineStatus';
 import { useGlobalKeyboard } from './src/hooks/useGlobalKeyboard';
+import { useAuthStore } from './src/stores/useAuthStore';
 
 // アクセシビリティコンポーネント
 import { SkipLinks, LiveRegion, ShortcutsHelp } from './src/components/accessibility';
@@ -45,6 +46,7 @@ import { OfflineBanner } from './src/components/ui/OfflineBanner';
 const Layout: React.FC<{ children: React.ReactNode }> = ({ children }) => {
   const location = useLocation();
   const { currentGroupId, selectedMonth } = useAppStore();
+  const { session, isLoading: authLoading } = useAuthStore();
   
   // 認証状態の監視を開始（これがないとisLoadingが常にtrueのまま）
   useAuth();
@@ -65,6 +67,23 @@ const Layout: React.FC<{ children: React.ReactNode }> = ({ children }) => {
   const isOnboardingRoute = onboardingRoutes.some(route => location.pathname.startsWith(route));
   const isAuthRoute = authRoutes.some(route => location.pathname.startsWith(route));
   const isMainApp = !isOnboardingRoute && !isAuthRoute;
+  
+  // 認証ローディング中はローディング画面を表示（認証ルートとオンボーディングルートを除く）
+  if (authLoading && !isAuthRoute && !isOnboardingRoute) {
+    return (
+      <div className="min-h-screen flex items-center justify-center bg-white">
+        <div className="text-center">
+          <div className="inline-block w-10 h-10 border-4 border-[#73F590] border-t-transparent rounded-full animate-spin mb-4"></div>
+          <p className="text-gray-500">読み込み中...</p>
+        </div>
+      </div>
+    );
+  }
+  
+  // 認証チェック: 認証ルート以外で未認証の場合はログインへリダイレクト
+  if (!authLoading && !session && !isAuthRoute && !isOnboardingRoute) {
+    return <Navigate to="/auth/login" state={{ from: location }} replace />;
+  }
   
   // Hide bottom nav on specific full-screen or modal-like routes
   const hideNavRoutes = ['/add', '/settlement'];

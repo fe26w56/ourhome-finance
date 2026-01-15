@@ -44,7 +44,7 @@ const FilteredSummaryCard: React.FC<FilteredSummaryCardProps> = ({
             {currency}
           </p>
         </div>
-        <p className="text-2xl font-bold text-primary">
+        <p className="text-2xl font-bold" style={{ color: 'rgba(17, 24, 18, 1)' }}>
           {formatAmount(totalAmount)}
         </p>
       </div>
