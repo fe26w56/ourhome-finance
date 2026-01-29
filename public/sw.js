@@ -1,5 +1,5 @@
 // Service Worker for OurHome Finance PWA
-const CACHE_NAME = 'ourhome-finance-v1';
+const CACHE_NAME = 'ourhome-finance-v2';
 const OFFLINE_URL = '/offline.html';
 
 // キャッシュするリソース
@@ -57,7 +57,13 @@ self.addEventListener('fetch', (event) => {
     return;
   }
 
-  // 静的リソースはキャッシュファースト
+  // ハッシュ付きアセットとナビゲーションはネットワークファースト（デプロイ後の古いキャッシュ問題を防止）
+  if (url.pathname.startsWith('/assets/') || request.mode === 'navigate') {
+    event.respondWith(networkFirst(request));
+    return;
+  }
+
+  // その他の静的リソースはキャッシュファースト
   event.respondWith(cacheFirst(request));
 });
 
