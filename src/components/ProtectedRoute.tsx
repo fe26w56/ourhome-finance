@@ -90,7 +90,7 @@ export function ProtectedRoute({ children, requireGroup = true }: ProtectedRoute
           return;
         }
 
-        const groups = groupMembersData?.map((item: any) => item.groups).filter(Boolean) || [];
+        const groups = groupMembersData?.map((item: { groups: Record<string, unknown> | null }) => item.groups).filter(Boolean) || [];
         
         if (groups.length > 0) {
           // グループがある場合、最初のグループを選択

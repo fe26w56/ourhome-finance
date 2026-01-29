@@ -282,6 +282,7 @@ const Settings: React.FC = () => {
         <h3 className="px-2 pb-2 text-xs font-semibold tracking-wider text-gray-500 dark:text-gray-400 uppercase">Configuration</h3>
         <div className="bg-white dark:bg-zinc-900 rounded-xl shadow-sm border border-gray-100 dark:border-zinc-800 overflow-hidden divide-y divide-gray-100 dark:divide-zinc-800 mb-6">
            <MenuItem icon="category" label="Categories" hasArrow onClick={() => navigate('/categories')} />
+           <MenuItem icon="flag" label="Goals" hasArrow onClick={() => navigate('/goals')} />
            <ToggleItem
              icon="account_balance_wallet"
              label="Carry-over Balance"

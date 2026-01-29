@@ -43,31 +43,40 @@ import { useAuthStore } from './src/stores/useAuthStore';
 import { SkipLinks, LiveRegion, ShortcutsHelp } from './src/components/accessibility';
 import { OfflineBanner } from './src/components/ui/OfflineBanner';
 
+// ルート定義の一元管理
+const ONBOARDING_ROUTES = [
+  '/onboarding',
+  '/onboarding/group-setup',
+  '/onboarding/join-group',
+  '/onboarding/profile-setup',
+  '/onboarding/template-selection',
+] as const;
+
+const AUTH_ROUTES = ['/auth'] as const;
+
 const Layout: React.FC<{ children: React.ReactNode }> = ({ children }) => {
   const location = useLocation();
   const { currentGroupId, selectedMonth } = useAppStore();
   const { session, isLoading: authLoading } = useAuthStore();
-  
+
   // 認証状態の監視を開始（これがないとisLoadingが常にtrueのまま）
   useAuth();
-  
+
   // オンライン状態監視
   useOnlineStatus();
-  
+
   // グローバルキーボードショートカット
   const { isShortcutsHelpOpen, closeShortcutsHelp } = useGlobalKeyboard();
-  
+
   // リアルタイム同期を有効化
   // フックは常に呼び出し、groupIdが空の場合はフック内部でスキップされる
   useRealtime(currentGroupId || '', selectedMonth || '');
-  
+
   // ルート判定
-  const onboardingRoutes = ['/onboarding', '/onboarding/group-setup', '/onboarding/join-group', '/onboarding/profile-setup', '/onboarding/template-selection'];
-  const authRoutes = ['/auth'];
-  const isOnboardingRoute = onboardingRoutes.some(route => location.pathname.startsWith(route));
-  const isAuthRoute = authRoutes.some(route => location.pathname.startsWith(route));
+  const isOnboardingRoute = ONBOARDING_ROUTES.some(route => location.pathname.startsWith(route));
+  const isAuthRoute = AUTH_ROUTES.some(route => location.pathname.startsWith(route));
   const isMainApp = !isOnboardingRoute && !isAuthRoute;
-  
+
   // 認証ローディング中はローディング画面を表示（認証ルートとオンボーディングルートを除く）
   if (authLoading && !isAuthRoute && !isOnboardingRoute) {
     return (
@@ -79,12 +88,12 @@ const Layout: React.FC<{ children: React.ReactNode }> = ({ children }) => {
       </div>
     );
   }
-  
+
   // 認証チェック: 認証ルート以外で未認証の場合はログインへリダイレクト
   if (!authLoading && !session && !isAuthRoute && !isOnboardingRoute) {
     return <Navigate to="/auth/login" state={{ from: location }} replace />;
   }
-  
+
   // Hide bottom nav on specific full-screen or modal-like routes
   const hideNavRoutes = ['/add', '/settlement'];
   const showNav = !hideNavRoutes.includes(location.pathname) && isMainApp;
@@ -93,29 +102,29 @@ const Layout: React.FC<{ children: React.ReactNode }> = ({ children }) => {
     <>
       {/* スキップリンク（アクセシビリティ） */}
       <SkipLinks />
-      
+
       {/* オフラインバナー */}
       <OfflineBanner />
-      
+
       {/* メインコンテンツ */}
       <main id="main-content" role="main">
         {children}
       </main>
-      
+
       {/* ナビゲーション */}
       {showNav && (
         <nav id="main-navigation" role="navigation" aria-label="メインナビゲーション">
           <BottomNav />
         </nav>
       )}
-      
+
       {/* ライブリージョン（トースト通知用） */}
       <LiveRegion />
-      
+
       {/* ショートカットヘルプモーダル */}
-      <ShortcutsHelp 
-        isOpen={isShortcutsHelpOpen} 
-        onClose={closeShortcutsHelp} 
+      <ShortcutsHelp
+        isOpen={isShortcutsHelpOpen}
+        onClose={closeShortcutsHelp}
       />
     </>
   );
@@ -132,7 +141,7 @@ const AnimatedRoutes = () => {
         <Route path="/auth/signup" element={<Signup />} />
         <Route path="/auth/forgot-password" element={<ForgotPassword />} />
         <Route path="/auth/callback" element={<AuthCallback />} />
-        
+
         {/* Onboarding Routes - 保護ルート（グループ不要） */}
         <Route path="/onboarding" element={
           <ProtectedRoute requireGroup={false}>
@@ -159,7 +168,7 @@ const AnimatedRoutes = () => {
             <CategoryTemplate />
           </ProtectedRoute>
         } />
-        
+
         {/* Main App Routes - 保護ルート（グループ必須） */}
         <Route path="/" element={
           <ProtectedRoute>
@@ -211,6 +220,9 @@ const AnimatedRoutes = () => {
             <CategoryManagement />
           </ProtectedRoute>
         } />
+
+        {/* 404 - 未定義ルートはホームにリダイレクト */}
+        <Route path="*" element={<Navigate to="/" replace />} />
       </Routes>
     </AnimatePresence>
   );
